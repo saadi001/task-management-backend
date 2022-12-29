@@ -35,6 +35,18 @@ async function run(){
                res.send(myTask)
           })
 
+          app.get('/completedTask', async(req, res)=>{
+               let query = {}
+               if(req.query.email){
+                    query={
+                         email:req.query.email,
+                         status: 'complete'
+                    }
+               }
+               const completedTask = await tasksCollection.find(query).toArray()
+               res.send(completedTask)
+          })
+
           app.post('/tasks', async(req, res)=>{
                const query = req.body;
                const result = await tasksCollection.insertOne(query);
@@ -42,7 +54,16 @@ async function run(){
           })
 
           app.put('/myTask/:id', async(req, res)=>{
-               
+               const id = req.params.id;
+               const filter = {_id:ObjectId(id)}
+               const option = {upsert: true}
+               const updatedDoc = {
+                    $set: {
+                         status: 'complete'
+                    }
+               }
+               const result = await tasksCollection.updateOne(filter,updatedDoc, option)
+               res.send(result)
           })
 
           app.delete('/myTask/:id', async(req, res)=>{
