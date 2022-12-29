@@ -19,9 +19,29 @@ async function run(){
 
           app.get('/tasks',async(req, res)=>{
                const query = {}
-               const tasks = await tasksCollection.find(query).toArray()
+               const tasks = await tasksCollection.find(query).toArray();
                res.send(tasks)
           })
+
+          app.get('/myTask', async(req, res)=>{
+               let query = {}
+               if(req.query.email){
+                    query={
+                         email:req.query.email,
+                         status:'running'       
+                    }
+               }
+               const myTask = await tasksCollection.find(query).toArray()
+               res.send(myTask)
+          })
+
+          app.post('/tasks', async(req, res)=>{
+               const query = req.body;
+               const result = await tasksCollection.insertOne(query);
+               res.send(result)
+          })
+
+
 
      }
      finally{
