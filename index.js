@@ -66,6 +66,19 @@ async function run(){
                res.send(result)
           })
 
+          app.put('/NotCompleteTask/:id', async(req, res)=>{
+               const id = req.params.id;
+               const filter = {_id:ObjectId(id)}
+               const option = {upsert: true}
+               const updatedDoc = {
+                    $set:{
+                         status: 'running'
+                    }
+               }
+               const result = await tasksCollection.updateOne(filter, updatedDoc, option)
+               res.send(result)
+          })
+
           app.delete('/myTask/:id', async(req, res)=>{
                const id = req.params.id;
                const filter = {_id: ObjectId(id)}
